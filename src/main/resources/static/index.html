@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>IPL Data</h2>
+
+<div id="teams-table-container"></div>
+<div id="players-table-container"></div>
+<div id="matches-table-container"></div>
+<div id="innings-table-container"></div>
+<div id="performances-table-container"></div>
+<div id="tournaments-table-container"></div>
+<div id="venues-table-container"></div>
+
+<script>
+    // Function to fetch data from the server and populate the table
+    function fetchAndPopulateTable(endpoint, containerId) {
+        fetch(endpoint)
+        .then(response => response.json())
+        .then(data => {
+            createTable(data, containerId);
+        })
+        .catch(error => console.error('Error fetching data:', error));
+    }
+
+    // Function to create and populate a table for a given endpoint
+    function createTable(data, containerId) {
+        const container = document.getElementById(containerId);
+        const table = document.createElement('table');
+        const headers = Object.keys(data[0]);
+
+        // Creating a table header row
+        const headerRow = document.createElement('tr');
+        headers.forEach(header => {
+            const th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        // Creating a table rows with data
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            headers.forEach(header => {
+                const td = document.createElement('td');
+                td.textContent = item[header];
+                row.appendChild(td);
+            });
+            table.appendChild(row);
+        });
+
+        container.appendChild(table);
+    }
+
+    fetchAndPopulateTable('http://localhost:8181/teams', 'teams-table-container');
+    fetchAndPopulateTable('http://localhost:8181/players', 'players-table-container');
+    fetchAndPopulateTable('http://localhost:8181/matches', 'matches-table-container');
+    fetchAndPopulateTable('http://localhost:8181/innings', 'innings-table-container');
+    fetchAndPopulateTable('http://localhost:8181/performances', 'performances-table-container');
+    fetchAndPopulateTable('http://localhost:8181/tournaments', 'tournaments-table-container');
+    fetchAndPopulateTable('http://localhost:8181/venues', 'venues-table-container');
+</script>
+
+</body>
+</html>
